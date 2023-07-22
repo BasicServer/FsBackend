@@ -1,0 +1,19 @@
+{
+  "name": "expressfs",
+  "version": "1.0.0-beta1",
+  "description": "Add filesystem access via HTTP requests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viridian035/ExpressFs.git"
+  },
+  "author": "viridian035",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/viridian035/ExpressFs/issues"
+  },
+  "homepage": "https://github.com/viridian035/ExpressFs#readme"
+}
