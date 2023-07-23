@@ -1,6 +1,6 @@
 {
   "name": "basic-fs-express",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Add filesystem access via HTTP requests",
   "main": "index.js",
   "scripts": {

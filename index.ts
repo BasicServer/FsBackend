@@ -117,7 +117,6 @@ export default function setupFs<T extends Express.Request>(
 						break;
 					case 'PUT':
 						console.log(`writing file ${filePath}`);
-						console.log(req.body);
 						const { content } = req.body;
 						if (typeof content != 'string') {
 							console.warn(
