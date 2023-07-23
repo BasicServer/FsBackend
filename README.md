@@ -3,7 +3,7 @@ Add filesystem access via HTTP requests
 
 ## Usage
 ```TypeScript
-import setupFs from 'expressfss';
+import setupFs from 'basic-fs-express';
 import Express from 'express';
 import Path from 'path';
 
