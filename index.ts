@@ -156,7 +156,7 @@ function getURLPath<T extends Express.Request>(
 	res: Express.Response,
 	configuration: ExpressFsCfg<T>,
 ): string {
-	const path = getFullPath(req.path, req, configuration);
+	const path = getFullPath(req.path, req, configuration, 1);
 
 	if (path == undefined) {
 		res.statusCode = 404;
@@ -171,9 +171,10 @@ function getFullPath<T extends Express.Request>(
 	path: string,
 	req: T,
 	configuration: ExpressFsCfg<T>,
+	prefixesToRemove: number,
 ) {
 	const pathParts = path.split('/').filter((x) => x != '');
-	pathParts.splice(0, 1);
+	pathParts.splice(0, prefixesToRemove);
 	const requestedPath = pathParts.join('/');
 	return configuration.getFilePath(req as T, requestedPath);
 }
@@ -186,8 +187,8 @@ async function copyOrMove<T extends Express.Request>(
 ) {
 	try {
 		const { src, dest } = req.body;
-		const srcPath = getFullPath(src, req as T, configuration);
-		const destPath = getFullPath(dest, req as T, configuration);
+		const srcPath = getFullPath(src, req as T, configuration, 0);
+		const destPath = getFullPath(dest, req as T, configuration, 0);
 
 		if (typeof src != 'string' || typeof dest != 'string') {
 			console.warn(`received incomplete copy request`);
@@ -198,8 +199,8 @@ async function copyOrMove<T extends Express.Request>(
 			res.statusCode = 404;
 			res.end();
 		} else {
-			if (shouldMove) await Fs.rename(src, dest);
-			else await Fs.cp(src, dest, { recursive: true });
+			if (shouldMove) await Fs.rename(srcPath, destPath);
+			else await Fs.cp(srcPath, destPath, { recursive: true });
 			res.send('ok');
 		}
 	} catch (error) {
