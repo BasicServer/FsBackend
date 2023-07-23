@@ -24,7 +24,7 @@ export default function setupFs<T extends Express.Request>(
 	//directories
 	expressApp.all('/dir/*', async (req, res, next) => {
 		try {
-			const dirPath = getFilePath(req as T, res, configuration);
+			const dirPath = getURLPath(req as T, res, configuration);
 
 			switch (req.method) {
 				case 'GET':
@@ -80,7 +80,7 @@ export default function setupFs<T extends Express.Request>(
 	//files
 	expressApp.all('/file/*', bodyParser, async (req, res, next) => {
 		try {
-			const filePath = getFilePath(req as T, res, configuration);
+			const filePath = getURLPath(req as T, res, configuration);
 
 			switch (req.method) {
 				case 'GET':
@@ -141,59 +141,70 @@ export default function setupFs<T extends Express.Request>(
 
 	//copy
 	expressApp.post('/copyfile', bodyParser, async (req, res, next) => {
-		try {
-			const { src, dest } = req.body;
-			if (typeof src != 'string' || typeof dest != 'string') {
-				console.warn(`received incomplete copy request`);
-				res.statusCode = 400;
-				res.end();
-			} else {
-				await Fs.cp(src, dest, { recursive: true });
-				res.send('ok');
-			}
-		} catch (error) {
-			console.error(`failed to handle copy request: ${error}`);
-			res.statusCode = 500;
-			res.end();
-		}
+		await copyOrMove(req as T, res, configuration, false);
 	});
 
 	//move
 	expressApp.post('/movefile', bodyParser, async (req, res, next) => {
-		try {
-			const { src, dest } = req.body;
-			if (typeof src != 'string' || typeof dest != 'string') {
-				console.warn(`received incomplete copy request`);
-				res.statusCode = 400;
-				res.end();
-			} else {
-				await Fs.rename(src, dest);
-				res.send('ok');
-			}
-		} catch (error) {
-			console.error(`failed to handle copy request: ${error}`);
-			res.statusCode = 500;
-			res.end();
-		}
+		await copyOrMove(req as T, res, configuration, true);
 	});
 }
 
 // UTILITY
-function getFilePath<T extends Express.Request>(
+function getURLPath<T extends Express.Request>(
 	req: T,
 	res: Express.Response,
 	configuration: ExpressFsCfg<T>,
 ): string {
-	const pathParts = req.path.split('/').filter((x) => x != '');
-	pathParts.splice(0, 1);
-	const requestedPath = pathParts.join('/');
-	const filePath = configuration.getFilePath(req as T, requestedPath);
+	const path = getFullPath(req.path, req, configuration);
 
-	if (filePath == undefined) {
+	if (path == undefined) {
 		res.statusCode = 404;
 		res.end();
 		throw `filepath undefined`;
 	}
 
-	return filePath;
+	return path;
+}
+
+function getFullPath<T extends Express.Request>(
+	path: string,
+	req: T,
+	configuration: ExpressFsCfg<T>,
+) {
+	const pathParts = path.split('/').filter((x) => x != '');
+	pathParts.splice(0, 1);
+	const requestedPath = pathParts.join('/');
+	return configuration.getFilePath(req as T, requestedPath);
+}
+
+async function copyOrMove<T extends Express.Request>(
+	req: T,
+	res: Express.Response,
+	configuration: ExpressFsCfg<T>,
+	shouldMove: boolean,
+) {
+	try {
+		const { src, dest } = req.body;
+		const srcPath = getFullPath(src, req as T, configuration);
+		const destPath = getFullPath(dest, req as T, configuration);
+
+		if (typeof src != 'string' || typeof dest != 'string') {
+			console.warn(`received incomplete copy request`);
+			res.statusCode = 400;
+			res.end();
+		} else if (typeof srcPath != 'string' || typeof destPath != 'string') {
+			console.warn(`copy source or dest do not exist`);
+			res.statusCode = 404;
+			res.end();
+		} else {
+			if (shouldMove) await Fs.rename(src, dest);
+			else await Fs.cp(src, dest, { recursive: true });
+			res.send('ok');
+		}
+	} catch (error) {
+		console.error(`failed to handle copy request: ${error}`);
+		res.statusCode = 500;
+		res.end();
+	}
 }
