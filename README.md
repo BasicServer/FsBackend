@@ -1,4 +1,4 @@
-# ExpressFs
+# BasicFsExpress
 Add filesystem access via HTTP requests
 
 ## Usage
