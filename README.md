@@ -11,7 +11,7 @@ const App = Express();
 
 setupFs(App, {
     fileUrlPrefix: '/file',
-    dirUrlPrefix: 'dir',
+    dirUrlPrefix: '/dir',
     getFilePath(req, path) {
         return Path.join('/path/to/data/', path);
     }
