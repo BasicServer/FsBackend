@@ -78,7 +78,7 @@ export default function setupFs<T extends Express.Request>(
 	});
 
 	//files
-	expressApp.all('/dir/*', bodyParser, async (req, res, next) => {
+	expressApp.all('/file/*', bodyParser, async (req, res, next) => {
 		try {
 			const filePath = getFilePath(req as T, res, configuration);
 
