@@ -157,6 +157,25 @@ export default function setupFs<T extends Express.Request>(
 			res.end();
 		}
 	});
+
+	//move
+	expressApp.post('/movefile', bodyParser, async (req, res, next) => {
+		try {
+			const { src, dest } = req.body;
+			if (typeof src != 'string' || typeof dest != 'string') {
+				console.warn(`received incomplete copy request`);
+				res.statusCode = 400;
+				res.end();
+			} else {
+				await Fs.rename(src, dest);
+				res.send('ok');
+			}
+		} catch (error) {
+			console.error(`failed to handle copy request: ${error}`);
+			res.statusCode = 500;
+			res.end();
+		}
+	});
 }
 
 // UTILITY
