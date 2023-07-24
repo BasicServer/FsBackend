@@ -3,6 +3,7 @@ import BodyParser from 'body-parser';
 import Fs from 'fs/promises';
 import FsNormal from 'fs';
 import Path from 'path';
+import Mime from 'mime';
 
 // TYPES
 export interface ExpressFsCfg<T extends Express.Request> {
@@ -99,6 +100,10 @@ export default function setupFs<T extends Express.Request>(
 						res.end();
 						return;
 					}
+
+					const type = Mime.lookup(filePath);
+					res.set('Content-Type', type);
+
 					const stream = FsNormal.createReadStream(filePath);
 					stream.on('data', (data) => {
 						console.log(data.toString());
