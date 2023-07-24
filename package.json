@@ -1,5 +1,5 @@
 {
-  "name": "basic-fs-express",
+  "name": "@basicserver/fs-backend",
   "version": "1.1.3",
   "description": "Add filesystem access via HTTP requests",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viridian035/BasicFsExpress.git"
+    "url": "git+https://github.com/BasicServer/FsBackend.git"
   },
   "author": "viridian035",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/viridian035/BasicFsExpress/issues"
+    "url": "https://github.com/BasicServer/FsBackend/issues"
   },
-  "homepage": "https://github.com/viridian035/BasicFsExpress#readme",
+  "homepage": "https://github.com/BasicServer/FsBackend#readme",
   "dependencies": {
     "@types/express": "^4.17.17",
     "express": "^4.18.2",
