@@ -173,7 +173,10 @@ function getFullPath<T extends Express.Request>(
 	configuration: ExpressFsCfg<T>,
 	prefixesToRemove: number,
 ) {
-	const pathParts = path.split('/').filter((x) => x != '');
+	const pathParts = path
+		.split('/')
+		.filter((x) => x != '')
+		.map((x) => x.replace(/%20/g, ' '));
 	pathParts.splice(0, prefixesToRemove);
 	const requestedPath = pathParts.join('/');
 	return configuration.getFilePath(req as T, requestedPath);
