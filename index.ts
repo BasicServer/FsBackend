@@ -113,6 +113,9 @@ export default function setupFs<T extends Express.Request>(
 						res.statusCode = 400;
 						res.end();
 					} else {
+						//create parent directories if needed
+						const dirPath = Path.dirname(filePath);
+						await Fs.mkdir(dirPath, { recursive: true });
 						await Fs.writeFile(filePath, content);
 						res.statusCode = 201;
 						res.send('ok');
