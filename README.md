@@ -1,11 +1,11 @@
-# BasicFsExpress
+# FsBackend
 Add filesystem access via HTTP requests
 
 Frontend functions are available [here](https://github.com/viridian035/BasicFsExpress-Frontend)
 
 ## Usage
 ```TypeScript
-import setupFs from 'basic-fs-express';
+import setupFs from '@basicserver/fs-backend';
 import Express from 'express';
 import Path from 'path';
 
